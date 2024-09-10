@@ -1,7 +1,44 @@
-import React from 'react'
+import React from "react";
+import { useForm } from "react-hook-form";
 
-export default function PaymentDetails() {
+const PaymentDetails = ({ nextStep, prevStep, handleChange, formData }) => {
+  const { register, handleSubmit, formState: { errors } } = useForm();
+
+  const onSubmit = () => nextStep();
+
   return (
-    <div>PaymentDetails</div>
-  )
-}
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <h2 className="text-2xl font-semibold text-indigo-500">Payment Details</h2>
+
+      <input
+        className="w-full p-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring focus:ring-indigo-400"
+        {...register("cardNumber", {
+          required: "Card number is required",
+          pattern: { value: /^\d{16}$/, message: "Invalid card number" }
+        })}
+        placeholder="Card Number"
+        onChange={handleChange("cardNumber")}
+        value={formData.cardNumber}
+      />
+      {errors.cardNumber && <p className="text-red-500">{errors.cardNumber.message}</p>}
+
+      <div className="flex justify-between">
+        <button
+          type="button"
+          className="bg-gray-400 text-white py-2 px-6 rounded-lg hover:bg-gray-500"
+          onClick={prevStep}
+        >
+          Back
+        </button>
+        <button
+          type="submit"
+          className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-2 px-6 rounded-lg font-semibold hover:opacity-90"
+        >
+          Next
+        </button>
+      </div>
+    </form>
+  );
+};
+
+export default PaymentDetails;
